@@ -141,6 +141,8 @@ messages = [
 - 返回结果通常带有更多元数据
 - 更容易和 Tools、Agent、Structured Output 结合
 
+
+
 ### 2.4 为什么 Embedding 放在这里
 
 Embedding 不是“会说话”的模型，但它依然属于 Model I/O 体系的一部分，因为它同样是“模型能力的接入”。
@@ -151,6 +153,8 @@ Embedding 不是“会说话”的模型，但它依然属于 Model I/O 体系�
 - Embedding Model 负责“把文本转成向量”
 
 后面你在 [第 18 章 向量数据库与 Embedding 实战](18-向量数据库与Embedding实战.md) 和 [第 19 章 RAG 检索增强生成](19-RAG检索增强生成.md) 会深入学习它。这里先建立一个概念即可：**Embedding 也是模型，只是它的输出不是自然语言，而是向量。**
+
+
 
 ### 2.5 常用模型参数
 
