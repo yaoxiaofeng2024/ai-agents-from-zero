@@ -18,22 +18,17 @@ from http import HTTPStatus
 from dotenv import load_dotenv
 
 load_dotenv()
+
 dashscope.api_key = 'sk-a73ee6f79ce54b7ca96f9b3e947f924e'
 
-# 待向量化的单句文本
 input_text = "衣服的质量杠杠的"
 
-# 调用百炼文本嵌入接口：先看清“请求长什么样、返回结构长什么样”
 resp = dashscope.TextEmbedding.call(
     model="text-embedding-v3",
     input=input_text,
 )
 
 if resp.status_code == HTTPStatus.OK:
-    # 这里直接打印完整响应，是为了先观察响应结构；后续案例再逐步只取 embedding 向量使用
     print(resp)
 
-"""
-【输出示例】
-{"status_code": 200, "request_id": "0a76a5db-f4af-4e5a-b0c4-1689d81ba154", "code": "", "message": "", "output": {"embeddings": [{"embedding": [0.02258586511015892, -0.08700370043516159, -0.013521800749003887, -0.05904024466872215, 0.027100207284092903, -0.03104848973453045, 0.01432843878865242, -0.0008265386568382382,……], "text_index": 0}]}, "usage": {"total_tokens": 6}}
-"""
+
