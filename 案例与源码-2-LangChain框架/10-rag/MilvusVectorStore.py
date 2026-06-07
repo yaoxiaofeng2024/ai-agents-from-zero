@@ -17,49 +17,10 @@
 
 # pip install pymilvus langchain-milvus dashscope python-dotenv
 from langchain_milvus import Milvus
-from langchain_community.embeddings import DashScopeEmbeddings
-from pymilvus import connections
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-# ==================== 重要补丁 ====================
-# 解决 langchain-milvus 0.3.x 的 ConnectionNotExistException
-# 参考: super_biz_agent_py/app/core/milvus_client.py::_patch_pymilvus_milvus_client_orm_alias
-def _patch_pymilvus_milvus_client_orm_alias():
-    """
-    langchain_milvus 内部创建的 MilvusClient 会将 _using 设为 ``cm-{id}``，
-    该别名未在 pymilvus.orm.connections 中注册；随后 ORM ``Collection(..., using=...)``
-    会抛出 ConnectionNotExistException: should create connection first.
-
-    在已通过 ``connections.connect(alias="default", ...)`` 建立连接后，
-    强制让 MilvusClient 使用 ``default`` 别名，与 ORM 一致。
-    """
-    if getattr(_patch_pymilvus_milvus_client_orm_alias, "_done", False):
-        return
-    try:
-        from pymilvus.milvus_client.milvus_client import MilvusClient
-    except ImportError:
-        return
-
-    _orig_init = MilvusClient.__init__
-
-    def _wrapped_init(self, *args, **kwargs):
-        _orig_init(self, *args, **kwargs)
-        self._using = "default"
-
-    MilvusClient.__init__ = _wrapped_init
-    setattr(_patch_pymilvus_milvus_client_orm_alias, "_done", True)
-
-# 应用补丁
-_patch_pymilvus_milvus_client_orm_alias()
-# ===============================================
+from common import get_embeddings, connect_milvus
 
 # 1. 初始化嵌入模型
-embeddingsModel = DashScopeEmbeddings(
-    model="text-embedding-v3", dashscope_api_key='sk-a73ee6f79ce54b7ca96f9b3e947f924e'
-)
+embeddingsModel = get_embeddings()
 
 # 2. 待写入的文本及（可选）元数据
 texts = [
@@ -84,29 +45,13 @@ metadata = [{"segment_id": str(i)} for i in range(1, len(texts) + 1)]
 
 # 3. Milvus 连接与集合名（需与检索案例一致）
 # 重要：langchain-milvus 0.3.x 版本需要在创建 VectorStore 之前先建立连接
-print("正在连接 Milvus 服务器...")
-try:
-    connections.connect(
-        alias="default",
-        host="localhost",
-        port="19530"
-    )
-    print("✅ Milvus 连接成功")
-except Exception as e:
-    print(f"❌ Milvus 连接失败: {e}")
-    print("\n解决方案：")
-    print("1. 确保 Milvus 服务已启动: docker ps | findstr milvus")
-    print("2. 或使用本地文件模式: connection_args={'uri': './milvus_demo.db'}")
-    exit(1)
+connection_args = connect_milvus()
 
 # 创建 Milvus 向量存储实例：此时只是"连上库 + 指定集合配置"，还没真正写入文本；真正写入发生在 add_texts()
 vector_store = Milvus(
     embedding_function=embeddingsModel,
     collection_name="newsgroups",
-    connection_args={
-        "host": "localhost",
-        "port": "19530"
-    },
+    connection_args=connection_args,
     auto_id=True,
 )
 
