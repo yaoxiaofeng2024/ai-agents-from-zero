@@ -110,7 +110,6 @@ vector_store = Milvus.from_documents(
 )
 
 # 4. 得到检索器：当你 invoke 查询文本时，LangChain 会先把问题向量化，再在库中做相似度检索
-
 retriever = vector_store.as_retriever(search_kwargs={"k": 2})
 results = retriever.invoke("LangChain 和 Redis 怎么结合？")
 for res in results:
