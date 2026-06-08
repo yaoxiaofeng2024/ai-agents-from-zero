@@ -15,6 +15,7 @@ from langgraph.graph import StateGraph, START, END
 from typing_extensions import TypedDict
 
 def MyOperatorMul(current: float, update: float) -> float:
+    print(current, update)
     if current == 0.0:
         print(f"current:{current}")
         print(f"update:{update}")
