@@ -33,11 +33,11 @@ def process_node(state: dict, param1: int, param2: str) -> dict:
 
 # 重试策略：仅对 RequestException、Timeout 重试，最多 3 次
 retry_policy = RetryPolicy(
-    max_attempts=3,
-    initial_interval=1,
-    jitter=True,
-    backoff_factor=2,
-    retry_on=[RequestException, Timeout],
+    max_attempts=3,                          # 最多重试 3 次（含首次调用）
+    initial_interval=1,                      # 首次重试等待 1 秒
+    jitter=True,                             # 启用随机抖动，防止多节点同时重试造成雪崩
+    backoff_factor=2,                        # 退避因子 2，每次等待时间翻倍（1s→2s→4s）
+    retry_on=[RequestException, Timeout],    # 仅遇到这两种异常时才重试
 )
 
 stateGraph = StateGraph(GraphState)
