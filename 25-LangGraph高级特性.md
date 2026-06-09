@@ -27,6 +27,8 @@
 
 所以你可以先把 LangGraph Streaming 理解成：**把图执行过程拆开给你看，而不是等整张图完全跑完才给最终结果。**
 
+
+
 ### 1.2 流式处理的价值
 
 流式处理不是“锦上添花”的体验优化，而是很多 AI 应用的重要基础能力。真实项目里常见需求包括：
@@ -38,6 +40,8 @@
 - 子图或工具内部有重要中间结果，希望在最终结果出来前先看到过程
 
 它有两层价值：**用户体验层**，让用户更早感知任务正在执行；**工程调试层**，让开发者更容易观察图内部发生了什么。
+
+
 
 ### 1.3 stream() 与 invoke()
 
@@ -52,6 +56,8 @@
 LangGraph 图本身实现了 **Runnable** 接口，所以自然拥有这些流式能力。这也让它和 [LangChain `Runnable` / LCEL](15-LCEL与链式调用.md) 体系能够衔接起来。
 
 这里还要补一个关键参数：`stream_mode`。`stream()` 不是只有一种固定输出格式，`stream_mode` 决定了“图在执行过程中，到底往外流什么”，比如完整状态、增量更新、模型消息片段，或自定义进度信息。
+
+
 
 ### 1.4 stream_mode 有哪些
 
@@ -75,6 +81,8 @@ stream_mode=["updates", "custom"]
 
 这时返回的流式结果通常会带上“当前是哪一种模式的数据”。
 
+
+
 ### 1.5 values 和 updates 怎么区分
 
 这是本章里最容易混的一组概念。
@@ -87,6 +95,8 @@ stream_mode=["updates", "custom"]
 - `values` 更像“每一步的全量快照”
 - `updates` 更像“每一步的增量日志”
 
+
+
 ### 1.6 案例：流图状态（values / updates）
 
 这个案例就是用最直接的方式，把 `values` 和 `updates` 的差别跑给你看。它的重点不是业务逻辑，而是让你建立一个流式观察状态变化的直觉。
@@ -94,6 +104,8 @@ stream_mode=["updates", "custom"]
 【案例源码】`案例与源码-3-LangGraph框架/07-senior/streaming/StreamGraphState.py`
 
 [StreamGraphState.py](案例与源码-3-LangGraph框架/07-senior/streaming/StreamGraphState.py ":include :type=code")
+
+
 
 ### 1.7 案例：多模式流与 debug
 
@@ -106,6 +118,8 @@ stream_mode=["updates", "custom"]
 
 [StreamMultipleModes.py](案例与源码-3-LangGraph框架/07-senior/streaming/StreamMultipleModes.py ":include :type=code")
 
+
+
 ### 1.8 案例：LLM 逐 token 流式输出（messages）
 
 如果某个节点里调用了大模型，`messages` 模式就特别有价值。它可以帮助你在图运行过程中，直接拿到模型生成的消息片段，而不用等节点完全执行完。
@@ -115,6 +129,8 @@ stream_mode=["updates", "custom"]
 【案例源码】`案例与源码-3-LangGraph框架/07-senior/streaming/StreamLLMTokens.py`
 
 [StreamLLMTokens.py](案例与源码-3-LangGraph框架/07-senior/streaming/StreamLLMTokens.py ":include :type=code")
+
+
 
 ### 1.9 案例：自定义数据流（custom）
 
@@ -138,6 +154,8 @@ stream_mode=["updates", "custom"]
 【案例源码】`案例与源码-3-LangGraph框架/07-senior/streaming/StreamCustomData.py`
 
 [StreamCustomData.py](案例与源码-3-LangGraph框架/07-senior/streaming/StreamCustomData.py ":include :type=code")
+
+
 
 ### 1.10 小结：什么时候该用哪种流
 
