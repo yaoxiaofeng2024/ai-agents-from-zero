@@ -39,12 +39,14 @@ def main():
     )
 
     # updates：每步结束后只流出「本步对状态的更新」
+    ## -- updates（增量日志）像是在说：“我刚才做了什么”。
     for chunk in graph.stream({"topic": "ice cream"}, stream_mode="updates"):
         print(chunk)
 
     print()
 
     # values：每步结束后流出「当前完整 state」（未写字段可能仍为空字符串等初始形态）
+    ## -- （全量快照）像是在说：“现在全局长什么样”。
     for chunk in graph.stream({"topic": "ice cream"}, stream_mode="values"):
         print(chunk)
 
