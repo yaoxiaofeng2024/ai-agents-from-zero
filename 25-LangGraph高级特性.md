@@ -351,6 +351,8 @@ LangGraph 提供的核心原语是 `interrupt(...)`。它可以让节点运行�
 
 可以把两者的关系理解成：`interrupt` 是图里主动设置的暂停点，`Command(resume=...)` 是暂停后的恢复输入。
 
+
+
 ### 3.2 interrupt 与持久化
 
 `interrupt` 不是普通函数里的 `input()`。它要解决的是生产级图运行中的暂停与恢复，所以必须依赖 checkpoint：
@@ -434,6 +436,8 @@ Interrupt 和 Time-Travel 都建立在 checkpoint 之上，但目的不同：
 在复杂系统里，两者还会组合使用。比如图在审核节点暂停，用户拒绝后，可以回到更早的 checkpoint 修改状态，再从那里分出另一条执行路径。这也是 LangGraph 适合复杂 Agent 工作流的原因：它不是只“跑一遍”，而是能围绕状态历史做暂停、恢复、修改和分叉。
 
 ---
+
+
 
 ## 4、时间回溯（Time-Travel）
 
